@@ -1,0 +1,32 @@
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  // 1. Wannan yana farawa da Pi SDK
+  Pi.init({ version: "2.0", sandbox: true }) // sandbox: true = don gwaji da Test-Pi
+
+  // 2. Wannan shine aikin da zai gudana idan an danna button
+  function signInWithPi() {
+    const izini = ['username', 'payments']; // Abin da muke nema daga Pi: suna da biyan kudi
+    
+    Pi.authenticate(izini, idanAkwaiBiyanDaBaiKareBa).then(function(bayani) {
+      // Idan ya yi nasara
+      console.log("An shiga cikin nasara: ", bayani);
+      alert("Barka da zuwa " + bayani.user.username); // Gaisuwa da sunan Pi user
+      // A nan zaka iya tura shi zuwa shafin dashboard
+      
+    }).catch(function(kuskure) {
+      // Idan ya samu matsala
+      console.error(kuskure);
+      alert("Ba a iya shiga ba: " + kuskure);
+    });
+  }
+
+  // 3. Wannan yana kula da biyan da aka fara amma bai kare ba
+  function idanAkwaiBiyanDaBaiKareBa(biya) {
+    console.log("Akwai wani biya da bai kare ba: ", biya);
+  }
+</script>
+
+<!-- 4. Wannan shine button din da mutane za su danna -->
+<button onclick="signInWithPi()" style="background:purple; color:white; padding:12px 24px; border:none; border-radius:8px; font-size:16px;">
+  Shiga da Pi
+</button>
