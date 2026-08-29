@@ -1,103 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NexaPay</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f3fa;
-      color: #222;
-    }
-
-    .header {
-      background: #6f3fa0;
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 18px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      margin-top: 0;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 12px;
-      background: #6f3fa0;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    .service {
-      padding: 15px;
-      margin: 10px 0;
-      background: #f1eafa;
-      border-radius: 12px;
-    }
-  </style>
+    <title>NexaPay</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script> <!-- 1. Sanya wannan a nan -->
 </head>
-
 <body>
+    <h1>Welcome to NexaPay</h1>
+    <p>Simple and convenient digital payment services powered by PI</p>
 
-  <div class="header">
-    <h1>🟣 NexaPay</h1>
-    <p>Fast & Secure Pi Payments</p>
-  </div>
+    <!-- 2. Sanya button din nan -->
+    <button onclick="signInWithPi()" style="background:purple; color:white; padding:12px 24px; border:none; border-radius:8px; font-size:16px;">
+      Shiga da Pi
+    </button>
 
-  <div class="container">
+    <!-- 3. Sanya script din nan a kasa kafin </body> -->
+    <script>
+      Pi.init({ version: "2.0", sandbox: true })
 
-    <div class="card">
-      <h2>Welcome to NexaPay</h2>
-      <p>Simple and convenient digital payment services powered by Pi.</p>
+      function signInWithPi() {
+        const izini = ['username', 'payments'];
+        
+        Pi.authenticate(izini, idanAkwaiBiyanDaBaiKareBa).then(function(bayani) {
+          alert("Barka da zuwa " + bayani.user.username);
+        }).catch(function(kuskure) {
+          alert("Ba a iya shiga ba: " + kuskure);
+        });
+      }
 
-      <button id="loginBtn">
-        Sign in with Pi
-      </button>
-    </div>
-
-    <div class="card">
-      <h2>Services</h2>
-
-      <div class="service">📱 Airtime</div>
-      <div class="service">🌐 Data</div>
-      <div class="service">🟣 Pi Payments</div>
-      <div class="service">🧾 Transaction History</div>
-
-    </div>
-
-  </div>
-
-  <script>
-    document.getElementById("loginBtn").addEventListener("click", function() {
-      alert("Pi Login will be connected here.");
-    });
-  </script>
-
+      function idanAkwaiBiyanDaBaiKareBa(biya) {
+        console.log("Akwai wani biya da bai kare ba: ", biya);
+      }
+    </script>
 </body>
 </html>
