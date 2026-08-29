@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>NexaPay Dashboard</title>
-    <style>
-        body { font-family: Arial; text-align: center; padding: 50px; background: #f5f5f5; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
-        h1 { color: purple; }
-        .balance { font-size: 32px; font-weight: bold; color: green; }
-        .logout-btn { margin-top:20px; background:gray; color:white; padding:10px 20px; border:none; border-radius:8px; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>Welcome to Your Dashboard</h1>
-        <p id="welcome">Loading your info...</p>
-        
-        <h3>Your Pi Balance</h3>
-        <p class="balance">0.00 Pi</p>
-        <p><small>This is test mode - sandbox</small></p>
-
-        <button onclick="window.location.href='index.html'" class="logout-btn">
-            Logout
-        </button>
-    </div>
-
+    <title>NexaPay</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body style="text-align:center; padding-top:100px;">
+    <h1 style="color:purple;">Welcome to NexaPay</h1>
+    <p>Simple and convenient digital payment services powered by PI</p>
+
+    <button onclick="signInWithPi()" style="background:purple; color:white; padding:12px 24px; border:none; border-radius:8px; font-size:16px;">
+      Sign in with Pi
+    </button>
+
     <script>
-        Pi.init({ version: "2.0", sandbox: true })
-        
-        // Get username from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('user');
-        
-        if(username) {
-            document.getElementById('welcome').innerText = "Welcome, " + username + "!";
-        }
+      Pi.init({ version: "2.0", sandbox: true })
+
+      function signInWithPi() {
+        const scopes = ['username', 'payments'];
+        Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+          // HERE IS THE IMPORTANT PART
+          const username = auth.user.username;
+          console.log("Logged in as: " + username);
+          window.location.href = "dashboard.html?user=" + username;
+          
+        }).catch(function(error) {
+          alert("Login failed: " + error);
+        });
+      }
+
+      function onIncompletePaymentFound(payment) {
+        console.log("Incomplete payment: ", payment);
+      }
     </script>
 </body>
 </html>
