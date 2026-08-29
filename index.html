@@ -1,36 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>NexaPay</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-</head>
-<body style="text-align:center; padding-top:100px;">
-    <h1 style="color:purple;">Welcome to NexaPay</h1>
-    <p>Simple and convenient digital payment services powered by PI</p>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  // Initialize Pi SDK
+  Pi.init({ 
+    version: "2.0", 
+    sandbox: true // bar shi true har sai ka tura app zuwa production
+  });
 
-    <button onclick="signInWithPi()" style="background:purple; color:white; padding:12px 24px; border:none; border-radius:8px; font-size:16px;">
-      Sign in with Pi
-    </button>
+  // Function da ke gudana lokacin da aka danna button
+  function signInWithPi() {
+    const scopes = ['username', 'payments']; // Abin da muke nema daga Pi
 
-    <script>
-      Pi.init({ version: "2.0", sandbox: true })
+    Pi.authenticate(scopes, onIncompletePaymentFound)
+      .then(function(auth) {
+        // Idan ya yi nasara
+        const username = auth.user.username;
+        const userId = auth.user.uid;
+        console.log("Login Success:", username);
+        
+        // MU TURASHI DASHBOARD - Dole mu yi haka
+        window.location.href = "/dashboard.html?user=" + username;
+        
+      })
+      .catch(function(error) {
+        // Idan ya yi kuskure
+        console.error("Login Error:", error);
+        alert("Login failed: " + error);
+      });
+  }
 
-      function signInWithPi() {
-        const scopes = ['username', 'payments'];
-        Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
-          // HERE IS THE IMPORTANT PART
-          const username = auth.user.username;
-          console.log("Logged in as: " + username);
-          window.location.href = "dashboard.html?user=" + username;
-          
-        }).catch(function(error) {
-          alert("Login failed: " + error);
-        });
-      }
-
-      function onIncompletePaymentFound(payment) {
-        console.log("Incomplete payment: ", payment);
-      }
-    </script>
-</body>
-</html>
+  // Wannan yana kula da biyan da ba a gama ba
+  function onIncompletePaymentFound(payment) {
+    console.log("Incomplete payment found:", payment);
+  }
+</script>
