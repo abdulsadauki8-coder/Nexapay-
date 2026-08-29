@@ -1,5 +1,1 @@
-your-project/
-  public/
-    validation-key.txt
-  src/
-  ...2418b946cef03b94e02b4524b8433c
+2418b946cef03b94e02b4524b8433c
