@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>NexaPay</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script> <!-- 1. Sanya wannan a nan -->
+    <title>NexaPay Dashboard</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #f5f5f5; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h1 { color: purple; }
+        .balance { font-size: 32px; font-weight: bold; color: green; }
+        .logout-btn { margin-top:20px; background:gray; color:white; padding:10px 20px; border:none; border-radius:8px; cursor: pointer; }
+    </style>
 </head>
 <body>
-    <h1>Welcome to NexaPay</h1>
-    <p>Simple and convenient digital payment services powered by PI</p>
-
-    <!-- 2. Sanya button din nan -->
-    <button onclick="signInWithPi()" style="background:purple; color:white; padding:12px 24px; border:none; border-radius:8px; font-size:16px;">
-      Shiga da Pi
-    </button>
-
-    <!-- 3. Sanya script din nan a kasa kafin </body> -->
-    <script>
-      Pi.init({ version: "2.0", sandbox: true })
-
-      function signInWithPi() {
-        const izini = ['username', 'payments'];
+    <div class="card">
+        <h1>Welcome to Your Dashboard</h1>
+        <p id="welcome">Loading your info...</p>
         
-        Pi.authenticate(izini, idanAkwaiBiyanDaBaiKareBa).then(function(bayani) {
-          alert("Barka da zuwa " + bayani.user.username);
-        }).catch(function(kuskure) {
-          alert("Ba a iya shiga ba: " + kuskure);
-        });
-      }
+        <h3>Your Pi Balance</h3>
+        <p class="balance">0.00 Pi</p>
+        <p><small>This is test mode - sandbox</small></p>
 
-      function idanAkwaiBiyanDaBaiKareBa(biya) {
-        console.log("Akwai wani biya da bai kare ba: ", biya);
-      }
+        <button onclick="window.location.href='index.html'" class="logout-btn">
+            Logout
+        </button>
+    </div>
+
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script>
+        Pi.init({ version: "2.0", sandbox: true })
+        
+        // Get username from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('user');
+        
+        if(username) {
+            document.getElementById('welcome').innerText = "Welcome, " + username + "!";
+        }
     </script>
 </body>
 </html>
