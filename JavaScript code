@@ -1,7 +1,0 @@
-Pi.authenticate(['username', 'payments'], onIncompletePaymentFound).then(function(auth) {
-  const username = auth.user.username;
-  window.location.href = "dashboard.html?user=" + username; // Dole ne ya kasance haka
-  
-}).catch(function(error) {
-  alert("Login failed: " + error);
-});
