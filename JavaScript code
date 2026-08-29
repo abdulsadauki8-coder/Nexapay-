@@ -1,0 +1,8 @@
+Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+  // Success - redirect to dashboard
+  const username = auth.user.username;
+  window.location.href = "dashboard.html?user=" + username;
+  
+}).catch(function(error) {
+  alert("Login failed: " + error);
+});
