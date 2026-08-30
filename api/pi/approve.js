@@ -6,11 +6,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { paymentId, accessToken } = req.body;
+    const { paymentId } = req.body;
 
-    if (!paymentId || !accessToken) {
+    if (!paymentId) {
       return res.status(400).json({
-        error: "paymentId and accessToken are required"
+        error: "paymentId is required"
+      });
+    }
+
+    const apiKey = process.env.PI_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "PI_API_KEY is not configured"
       });
     }
 
@@ -19,7 +27,7 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Key ${apiKey}`,
           "Content-Type": "application/json"
         }
       }
