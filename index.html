@@ -1,353 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>NexaPay</title>
-
-  <!-- Official Pi SDK -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f2fa;
-      color: #222;
-    }
-
-    .header {
-      background: #6f3fa0;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
-    }
-
-    .logo {
-      font-size: 42px;
-    }
-
-    .header h1 {
-      margin: 8px 0;
-      font-size: 32px;
-    }
-
-    .header p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    .container {
-      max-width: 520px;
-      margin: 25px auto;
-      padding: 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      margin-bottom: 18px;
-      border-radius: 18px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      margin-top: 0;
-    }
-
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 10px;
-      background: #6f3fa0;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background: #aaa;
-    }
-
-    .service {
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 12px;
-      background: #f1eafa;
-    }
-
-    #userBox {
-      display: none;
-    }
-
-    #message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #f1eafa;
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="header">
-    <div class="logo">🟣</div>
-    <h1>NexaPay</h1>
-    <p>Fast & Secure Pi Payments</p>
-  </div>
-<button id="payBtn" onclick="startPayment()" style="display:none;">
-  🟣 Test Payment — 0.1 Pi
-</button>
-
-  <div class="container">
-
-    <!-- Welcome -->
-    <div class="card">
-
-      <h2>Welcome to NexaPay</h2>
-
-      <p>
-        A simple payment platform built for the Pi ecosystem.
-      </p>
-
-      <button id="loginBtn" onclick="loginWithPi()">
-        Sign in with Pi
-      </button>
-
-      <div id="message"></div>
-
-    </div>
-
-
-    <!-- User -->
-    <div class="card" id="userBox">
-
-      <h2>Welcome 👋</h2>
-
-      <p>
-        Pi Username:
-        <strong id="username">---</strong>
-      </p>
-
-      <button onclick="logoutUser()">
-        Sign Out
-      </button>
-
-    </div>
-
-
-    <!-- Services -->
-    <div class="card">
-
-      <h2>Services</h2>
-
-      <div class="service">
-        📱 <strong>Airtime</strong>
-        <br>
-        <small>Buy airtime with Pi</small>
-      </div>
-
-      <div class="service">
-        🌐 <strong>Data</strong>
-        <br>
-        <small>Buy data with Pi</small>
-      </div>
-
-      <div class="service">
-        🟣 <strong>Pi Payments</strong>
-        <br>
-        <small>Secure Pi transactions</small>
-      </div>
-
-      <div class="service">
-        🧾 <strong>Transaction History</strong>
-        <br>
-        <small>View your payments</small>
-      </div>
-
-    </div>
-
-  </div>
-
-
 <script>
-
-  /*
-   * Initialize Pi SDK
-   *
-   * NexaPay is currently on Pi Testnet,
-   * so sandbox mode is enabled.
-   */
-
   const Pi = window.Pi;
 
   Pi.init({
-  version: "2.0",
-  sandbox: true
-});
-
-
-  let accessToken = null;
-  let currentUser = null;
-
-
-  /*
-   * Handle incomplete payments
-   */
+    version: "2.0",
+    sandbox: true
+  });
 
   function onIncompletePaymentFound(payment) {
-
-    console.log(
-      "Incomplete payment found:",
-      payment
-    );
-
-    showMessage(
-      "An incomplete Pi payment was found. We will handle it securely."
-    );
+    console.log("Incomplete payment found:", payment);
+    showMessage("An incomplete Pi payment was found.");
   }
 
-
-  /*
-   * Pi Login
-   */
-
   async function loginWithPi() {
-
-    const button =
-      document.getElementById("loginBtn");
-
+    const button = document.getElementById("loginBtn");
     button.disabled = true;
-
-    button.innerText =
-      "Connecting to Pi...";
+    button.innerText = "Connecting to Pi...";
 
     try {
+      const scopes = ["username", "payments"];
+      const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
 
-      const scopes = [
-        "username",
-        "payments"
-      ];
+      const username = auth.user.username;
+      console.log("Pi authentication successful:", auth);
 
-      const auth =
-        await Pi.authenticate(
-          scopes,
-          onIncompletePaymentFound
-        );
-
-      /*
-       * Authentication successful
-       */
-
-      accessToken =
-        auth.accessToken;
-
-      currentUser =
-        auth.user;
-
-      console.log(
-        "Pi authentication successful:",
-        auth
-      );
-
-
-      document.getElementById(
-        "username"
-      ).innerText =
-        currentUser.username;
-
-
-      document.getElementById(
-        "userBox"
-      ).style.display =
-        "block";
-
-
-      button.style.display =
-        "none";
-
-
-      showMessage(
-        "Pi Login successful! Welcome " +
-        currentUser.username
-      );
+      showMessage("Login successful! Redirecting...");
+      
+      // WANNAN SABON LAYIN SHINE ZAI KA DASHBOARD
+      setTimeout(() => {
+        window.location.href = "/dashboard.html?user=" + username;
+      }, 1000);
 
     } catch (error) {
-
-      console.error(
-        "Pi authentication error:",
-        error
-      );
-
-      showMessage(
-        "Pi Login failed. Please open NexaPay inside Pi Browser and try again."
-      );
-
+      console.error("Pi authentication error:", error);
+      showMessage("Login failed. Dole ne ka bude app din a cikin Pi Browser.");
       button.disabled = false;
-
-      button.innerText =
-        "Sign in with Pi";
+      button.innerText = "Sign in with Pi";
     }
   }
 
-
-  /*
-   * Message helper
-   */
-
   function showMessage(text) {
-
-    const box =
-      document.getElementById("message");
-
+    const box = document.getElementById("message");
     box.innerText = text;
-
     box.style.display = "block";
   }
 
-
-  /*
-   * Sign out
-   */
-
   function logoutUser() {
-
-    accessToken = null;
-    currentUser = null;
-
-    document.getElementById(
-      "userBox"
-    ).style.display =
-      "none";
-
-    document.getElementById(
-      "loginBtn"
-    ).style.display =
-      "block";
-
-    document.getElementById(
-      "loginBtn"
-    ).disabled =
-      false;
-
-    document.getElementById(
-      "loginBtn"
-    ).innerText =
-      "Sign in with Pi";
-
-    showMessage(
-      "You have been signed out."
-    );
+    document.getElementById("userBox").style.display = "none";
+    document.getElementById("loginBtn").style.display = "block";
+    document.getElementById("loginBtn").disabled = false;
+    document.getElementById("loginBtn").innerText = "Sign in with Pi";
+    showMessage("You have been signed out.");
   }
+</script>
 
-<script src="script.js"></script>
+<!-- Goge wannan layin idan ba ka da file mai suna script.js -->
+<!-- <script src="script.js"></script> -->
