@@ -1,121 +1,388 @@
-<script>
-  let Pi = null;
-  let accessToken = null;
-  let currentUser = null;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
-  // Jira Pi SDK ya load
-  if (window.Pi) {
-    Pi = window.Pi;
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    Pi.init({
-      version: "2.0",
-      sandbox: true
-    });
+  <title>NexaPay</title>
 
-    console.log("Pi SDK successfully loaded");
-  } else {
-    console.error("Pi SDK bai load ba");
-  }
+  <!-- Pi SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
+  <style>
 
-  // Sign in with Pi
-  async function loginWithPi() {
-
-    const button = document.getElementById("loginBtn");
-
-    if (!Pi) {
-      showMessage(
-        "Pi SDK bai load ba. Ka bude app din a cikin Pi Browser."
-      );
-      return;
+    * {
+      box-sizing: border-box;
     }
 
-    button.disabled = true;
-    button.innerText = "Connecting to Pi...";
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f2fa;
+      color: #222;
+    }
 
-    try {
+    .header {
+      background: #6f3fa0;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
 
-      const scopes = [
-        "username",
-        "payments"
-      ];
+    .logo {
+      font-size: 42px;
+    }
 
-      const auth = await Pi.authenticate(
-        scopes,
-        onIncompletePaymentFound
+    .header h1 {
+      margin: 8px 0;
+      font-size: 32px;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 18px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 10px;
+      background: #6f3fa0;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #aaa;
+    }
+
+    .service {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      background: #f1eafa;
+    }
+
+    #userBox {
+      display: none;
+    }
+
+    #message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f1eafa;
+      display: none;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="header">
+
+    <div class="logo">🟣</div>
+
+    <h1>NexaPay</h1>
+
+    <p>Fast & Secure Pi Payments</p>
+
+  </div>
+
+
+  <div class="container">
+
+    <!-- Welcome Card -->
+
+    <div class="card">
+
+      <h2>Welcome to NexaPay</h2>
+
+      <p>
+        A simple payment platform built for the Pi ecosystem.
+      </p>
+
+      <button id="loginBtn">
+        Sign in with Pi
+      </button>
+
+      <div id="message"></div>
+
+    </div>
+
+
+    <!-- User Card -->
+
+    <div class="card" id="userBox">
+
+      <h2>Welcome 👋</h2>
+
+      <p>
+        Pi Username:
+        <strong id="username">---</strong>
+      </p>
+
+      <button id="logoutBtn">
+        Sign Out
+      </button>
+
+    </div>
+
+
+    <!-- Services -->
+
+    <div class="card">
+
+      <h2>Services</h2>
+
+      <div class="service">
+        📱 <strong>Airtime</strong>
+        <br>
+        <small>Buy airtime with Pi</small>
+      </div>
+
+      <div class="service">
+        🌐 <strong>Data</strong>
+        <br>
+        <small>Buy data with Pi</small>
+      </div>
+
+      <div class="service">
+        🟣 <strong>Pi Payments</strong>
+        <br>
+        <small>Secure Pi transactions</small>
+      </div>
+
+      <div class="service">
+        🧾 <strong>Transaction History</strong>
+        <br>
+        <small>View your payments</small>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    let accessToken = null;
+    let currentUser = null;
+
+
+    // Pi Login
+
+    async function loginWithPi() {
+
+      const button =
+        document.getElementById("loginBtn");
+
+      if (!window.Pi) {
+
+        showMessage(
+          "Pi SDK bai load ba. Ka bude app din a Pi Browser."
+        );
+
+        return;
+      }
+
+
+      button.disabled = true;
+
+      button.innerText =
+        "Connecting to Pi...";
+
+
+      try {
+
+        const Pi = window.Pi;
+
+
+        Pi.init({
+          version: "2.0",
+          sandbox: true
+        });
+
+
+        const scopes = [
+          "username",
+          "payments"
+        ];
+
+
+        const auth =
+          await Pi.authenticate(
+            scopes,
+            onIncompletePaymentFound
+          );
+
+
+        accessToken =
+          auth.accessToken;
+
+
+        currentUser =
+          auth.user;
+
+
+        document.getElementById(
+          "username"
+        ).innerText =
+          currentUser.username;
+
+
+        document.getElementById(
+          "userBox"
+        ).style.display =
+          "block";
+
+
+        button.style.display =
+          "none";
+
+
+        showMessage(
+          "Welcome to NexaPay, " +
+          currentUser.username + "!"
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+          "Sign in failed. Ka tabbatar kana amfani da Pi Browser."
+        );
+
+
+        button.disabled =
+          false;
+
+
+        button.innerText =
+          "Sign in with Pi";
+
+      }
+
+    }
+
+
+    // Incomplete Payment
+
+    function onIncompletePaymentFound(payment) {
+
+      console.log(
+        "Incomplete payment:",
+        payment
       );
 
-      accessToken = auth.accessToken;
-      currentUser = auth.user;
+    }
 
-      console.log("Login successful:", auth);
 
-      document.getElementById("username").innerText =
-        currentUser.username;
+    // Message
 
-      document.getElementById("userBox").style.display =
+    function showMessage(text) {
+
+      const box =
+        document.getElementById("message");
+
+
+      box.innerText =
+        text;
+
+
+      box.style.display =
         "block";
 
-      button.style.display = "none";
-
-      showMessage(
-        "Welcome to NexaPay, " +
-        currentUser.username + "!"
-      );
-
-    } catch (error) {
-
-      console.error("Pi Login Error:", error);
-
-      showMessage(
-        "Sign in failed. Ka tabbatar kana bude NexaPay a Pi Browser."
-      );
-
-      button.disabled = false;
-      button.innerText = "Sign in with Pi";
     }
-  }
 
 
-  // Incomplete payment
-  function onIncompletePaymentFound(payment) {
+    // Logout
 
-    console.log(
-      "Incomplete payment:",
-      payment
+    function logoutUser() {
+
+      accessToken = null;
+
+      currentUser = null;
+
+
+      document.getElementById(
+        "userBox"
+      ).style.display =
+        "none";
+
+
+      const button =
+        document.getElementById(
+          "loginBtn"
+        );
+
+
+      button.style.display =
+        "block";
+
+
+      button.disabled =
+        false;
+
+
+      button.innerText =
+        "Sign in with Pi";
+
+
+      showMessage(
+        "You have signed out."
+      );
+
+    }
+
+
+    // Button Events
+
+    document.getElementById(
+      "loginBtn"
+    ).addEventListener(
+      "click",
+      loginWithPi
     );
-  }
 
 
-  // Show message
-  function showMessage(text) {
+    document.getElementById(
+      "logoutBtn"
+    ).addEventListener(
+      "click",
+      logoutUser
+    );
 
-    const box =
-      document.getElementById("message");
+  </script>
 
-    box.innerText = text;
-
-    box.style.display = "block";
-  }
-
-
-  // Sign out
-  function logoutUser() {
-
-    accessToken = null;
-    currentUser = null;
-
-    document.getElementById("userBox").style.display =
-      "none";
-
-    const button =
-      document.getElementById("loginBtn");
-
-    button.style.display = "block";
-    button.disabled = false;
-    button.innerText = "Sign in with Pi";
-
-    showMessage("You have signed out.");
-  }
-
-</script>
+</body>
+</html>
