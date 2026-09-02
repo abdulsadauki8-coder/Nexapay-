@@ -88,3 +88,32 @@ function logoutUser() {
 
   showMessage("You have been signed out.");
 }
+<script>
+const Pi = window.Pi;
+
+Pi.init({
+  version: "2.0",
+  sandbox: true
+});
+
+async function signInWithPi() {
+  try {
+    const scopes = ['username', 'payments'];
+
+    const auth = await Pi.authenticate(
+      scopes,
+      function(payment) {
+        console.log("Incomplete payment:", payment);
+      }
+    );
+
+    console.log(auth);
+
+    alert("Welcome " + auth.user.username);
+
+  } catch (error) {
+    console.error(error);
+    alert("Sign in failed: " + error.message);
+  }
+}
+</script>
