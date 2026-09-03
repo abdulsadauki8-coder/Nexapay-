@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NexaPay — Pi Testnet</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f2fa; color: #222; }
+    .header { background: #6f3fa0; color: #fff; text-align: center; padding: 30px 20px; }
+    .logo { font-size: 42px; }
+    .header h1 { margin: 8px 0; font-size: 32px; }
+    .header p { margin: 0; font-size: 16px; }
+    .container { max-width: 520px; margin: 25px auto; padding: 15px; }
+    .card { background: #fff; padding: 25px; margin-bottom: 18px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,.08); }
+    .card h2 { margin-top: 0; }
+    button { width: 100%; border: 0; border-radius: 12px; padding: 15px; margin-top: 10px; background: #6f3fa0; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+    .service { padding: 15px; margin: 10px 0; border-radius: 12px; background: #f1eafa; }
+    #userBox, #payBtn, #message { display: none; }
+    #message { margin-top: 15px; padding: 12px; border-radius: 10px; background: #f1eafa; white-space: pre-wrap; }
+    .testnet-note { color: #67408b; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🟣</div>
+    <h1>NexaPay</h1>
+    <p>Fast &amp; Secure Pi Payments</p>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Welcome to NexaPay</h2>
+      <p>A simple payment platform built for the Pi ecosystem.</p>
+      <p class="testnet-note">Testnet mode: use only Test-Pi in Pi Browser.</p>
+      <button id="loginBtn" type="button">Sign in with Pi</button>
+      <button id="payBtn" type="button">🟣 Test Payment — 0.1 Pi</button>
+      <div id="message" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="userBox">
+      <h2>Welcome 👋</h2>
+      <p>Pi Username: <strong id="username">---</strong></p>
+      <button id="logoutBtn" type="button">Sign Out</button>
+    </section>
+
+    <section class="card">
+      <h2>Services</h2>
+      <div class="service">📱 <strong>Airtime</strong><br><small>Buy airtime with Pi</small></div>
+      <div class="service">🌐 <strong>Data</strong><br><small>Buy data with Pi</small></div>
+      <div class="service">🟣 <strong>Pi Payments</strong><br><small>Secure Pi transactions</small></div>
+      <div class="service">🧾 <strong>Transaction History</strong><br><small>View your payments</small></div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
