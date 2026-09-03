@@ -316,11 +316,6 @@ async function startPayment() {
         console.error(error);
 
 
-        showMessage(
-          "Sign in failed. Ka tabbatar kana amfani da Pi Browser."
-        );
-
-
         button.disabled =
           false;
 
@@ -419,7 +414,10 @@ async function startPayment() {
       "click",
       logoutUser
     );
-
+document.getElementById("payBtn").addEventListener(
+  "click",
+  startPayment
+);
   </script>
 
 </body>
