@@ -192,7 +192,40 @@
 
   </div>
 
+async function startPayment() {
 
+  const paymentData = {
+    amount: 0.1,
+    memo: "NexaPay Test Transaction",
+    metadata: {
+      type: "test_payment"
+    }
+  };
+
+  const callbacks = {
+
+    onReadyForServerApproval: function(paymentId) {
+      console.log("Payment ready:", paymentId);
+      showMessage("Payment created successfully!");
+    },
+
+    onReadyForServerCompletion: function(paymentId, txid) {
+      console.log("Transaction:", txid);
+      showMessage("Transaction successful!");
+    },
+
+    onCancel: function(paymentId) {
+      showMessage("Payment cancelled.");
+    },
+
+    onError: function(error) {
+      console.error(error);
+      showMessage("Payment error occurred.");
+    }
+  };
+
+  Pi.createPayment(paymentData, callbacks);
+}
   <script>
 
     let accessToken = null;
